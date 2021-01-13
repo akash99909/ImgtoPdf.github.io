@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <title>Image to Pdf</title>
+</head>
+<body>
+
+
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">Image To PDF</a>
+          </div>
+          </nav>
+
+          <div class="container">
+            <h3>Put a image here</h3>
+            <p>and get a pdf of it.</p>
+            <button class="btn btn-primary">
+                <input type="file" id="imageFile">
+            </button>
+           
+            <canvas id="canvas" style="width: 400px; height: 400px;"></canvas>
+            <button id="button" class="btn btn-info">Download PDF</button>
+        </div>
+          
+
+
+
+
+    
+    
+
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+<script src="https://unpkg.com/pdf-lib@1.4.0"></script>
+<script src="https://unpkg.com/downloadjs@1.4.7"></script>
+<script>
+
+
+    var imageFile=document.getElementById("imageFile")
+    var canvas=document.getElementById("canvas")
+    var button=document.getElementById("button")
+    const { PDFDocument } = PDFLib
+
+    button.onclick =handleImageToPdf
+
+    function handleImageToPdf(){
+        html2canvas(canvas,{
+            onrendered:function(canvas){
+                var imgData=canvas.toDataURL('image/png')
+                var doc = new jsPDF('p','mm')
+                //var doc = new PDFLib('p','mm')
+                doc.addImage(imgData,'PNG',50,50)
+                doc.save("image.pdf")
+            }
+        })
+    }
+    
+
+    var ctx = canvas.getContext('2d')
+
+
+
+    imageFile.addEventListener("change",handleImage,false)
+
+    function handleImage(e){
+        console.log(e)
+
+        var reader=new FileReader()
+
+        reader.onload=function(event){
+            var image=new Image() 
+
+            image.onload = function(){
+                canvas.width=image.width
+                canvas.height=image.height
+                ctx.drawImage(image,10,10)
+
+            }
+
+            image.src=event.target.result 
+
+        }
+
+        reader.readAsDataURL(e.target.files[0])
+    }
+
+
+
+
+
+
+
+</script>
+
+</html>
